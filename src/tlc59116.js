@@ -31,9 +31,7 @@ class Tlc59116 {
   }
 
   enable_oscillator() {
-    let mode = this.i2c.readByteSync(this.devAddress, registers.MODE1);
-    mode &= (~0x01 << 4);
-    this.i2c.writeByteSync(this.devAddress, registers.MODE1, mode);
+    this.clear_single_bit(registers.MODE1, 4);
   }
 
   set_led(index, dutyCycle) {
@@ -54,6 +52,26 @@ class Tlc59116 {
     let register = this.auto_increment_reg_address(registers.LEDOUT0);
     let bytes = Buffer.alloc(4, mode);
     this.i2c.writeI2cBlockSync(this.devAddress, register, bytes.length, bytes);
+  }
+
+  set_single_bit(register, bitPosition) {
+    this.change_single_bit(register, bitPosition, 1);
+  }
+
+  clear_single_bit(register, bitPosition) {
+    this.change_single_bit(register, bitPosition, 0);
+  }
+
+  change_single_bit(register, bitPosition, value) {
+    if (bitPosition >= 0 && bitPosition < 8) {
+      let byte = this.i2c.readByteSync(this.devAddress, register);
+      if (value > 0) {
+        byte |= (0x01 << bitPosition);
+      } else {
+        byte &= (~0x01 << bitPosition);
+      }
+      this.i2c.writeByteSync(this.devAddress, register, byte);
+    }
   }
 
   auto_increment_reg_address(register) {
