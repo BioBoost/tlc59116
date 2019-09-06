@@ -1,11 +1,14 @@
 const registers = {
   MODE1: 0x00,
   PWM0: 0x02,
+  GROUP_PWM: 0x12,
+  GROUP_FREQ: 0x13,
   LEDOUT0: 0x14
 }
 
 class Tlc59116 {
   static LED_PER_LED_CONTROL = 0xAA;
+  static GROUP_CONTROL = 0xFF;
   static LEDS = 16;
 
   constructor(i2c, devAddress=0x60) {
@@ -16,9 +19,15 @@ class Tlc59116 {
   }
 
   enable_led_per_led_control() {
-    let register = this.auto_increment_reg_address(registers.LEDOUT0);
-    let pwm = Buffer.alloc(4, Tlc59116.LED_PER_LED_CONTROL);
-    this.i2c.writeI2cBlockSync(this.devAddress, register, pwm.length, pwm);
+    this.configure_group_control(Tlc59116.LED_PER_LED_CONTROL);
+  }
+
+  enable_group_control() {
+    this.configure_group_control(Tlc59116.GROUP_CONTROL);
+  }
+
+  disable_group_control() {
+    this.enable_led_per_led_control();
   }
 
   enable_oscillator() {
@@ -33,9 +42,19 @@ class Tlc59116 {
     }
   }
 
+  group_dim(brightness) {
+    this.i2c.writeByteSync(this.devAddress, registers.GROUP_PWM, brightness);
+  }
+
   //////////////////////
   // Internal methods //
   //////////////////////
+
+  configure_group_control(mode) {
+    let register = this.auto_increment_reg_address(registers.LEDOUT0);
+    let bytes = Buffer.alloc(4, mode);
+    this.i2c.writeI2cBlockSync(this.devAddress, register, bytes.length, bytes);
+  }
 
   auto_increment_reg_address(register) {
     return register | (0x01 << 7);
