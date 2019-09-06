@@ -1,0 +1,23 @@
+{
+  "name": "tlc59116",
+  "version": "1.0.0",
+  "description": "Library for TLC59116 LED driver",
+  "main": "./src/tlc59116.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BioBoost/tlc59116.git"
+  },
+  "keywords": [
+    "tlc59116",
+    "led"
+  ],
+  "author": "Nico De Witte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BioBoost/tlc59116/issues"
+  },
+  "homepage": "https://github.com/BioBoost/tlc59116#readme"
+}
