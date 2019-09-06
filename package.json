@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/BioBoost/tlc59116/issues"
   },
-  "homepage": "https://github.com/BioBoost/tlc59116#readme"
+  "homepage": "https://github.com/BioBoost/tlc59116#readme",
+  "dependencies": {
+    "i2c-bus": "^4.0.10"
+  }
 }
