@@ -61,6 +61,12 @@ class Tlc59116 {
     this.i2c.writeByteSync(this.devAddress, registers.GROUP_PWM, dc);
   }
 
+  all_off() {
+    let register = this.auto_increment_reg_address(registers.PWM0);
+    let pwm = Buffer.alloc(Tlc59116.LEDS, 0);
+    this.i2c.writeI2cBlockSync(this.devAddress, register, pwm.length, pwm);
+  }
+
   //////////////////////
   // Internal methods //
   //////////////////////
