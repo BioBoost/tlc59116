@@ -1,3 +1,5 @@
+const easybit = require('easybit');
+
 const registers = {
   MODE1: 0x00,
   MODE2: 0x01,
@@ -86,27 +88,21 @@ class Tlc59116 {
   }
 
   set_single_bit(register, bitPosition) {
-    this.change_single_bit(register, bitPosition, 1);
+    this.change_register_value(register, (byte) => easybit.set(byte, bitPosition));
   }
 
   clear_single_bit(register, bitPosition) {
-    this.change_single_bit(register, bitPosition, 0);
+    this.change_register_value(register, (byte) => easybit.clear(byte, bitPosition));
   }
 
-  change_single_bit(register, bitPosition, value) {
-    if (bitPosition >= 0 && bitPosition < 8) {
-      let byte = this.i2c.readByteSync(this.devAddress, register);
-      if (value > 0) {
-        byte |= (0x01 << bitPosition);
-      } else {
-        byte &= (~0x01 << bitPosition);
-      }
-      this.i2c.writeByteSync(this.devAddress, register, byte);
-    }
+  change_register_value(register, manipulator) {
+    let byte = this.i2c.readByteSync(this.devAddress, register);
+    byte = manipulator(byte);
+    this.i2c.writeByteSync(this.devAddress, register, byte);
   }
 
   auto_increment_reg_address(register) {
-    return register | (0x01 << 7);
+    return easybit.set(register, 7)
   }
 
 }

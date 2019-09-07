@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/BioBoost/tlc59116#readme",
   "dependencies": {
+    "easybit": "0.0.1",
     "i2c-bus": "^4.0.10"
   }
 }
