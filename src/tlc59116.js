@@ -15,10 +15,12 @@ class Tlc59116 {
   static LEDS = 16;
   static MIN_PERIOD_MS = 41;
   static MAX_PERIOD_MS = 10730;
+  static SOFT_RESET_ADDR = 0x6B;
 
   constructor(i2c, devAddress=0x60) {
     this.i2c = i2c;
     this.devAddress = devAddress;
+    this.reset();
     this.enable_led_per_led_control();
     this.enable_oscillator();
   }
@@ -67,6 +69,10 @@ class Tlc59116 {
     let register = this.auto_increment_reg_address(registers.PWM0);
     let pwm = Buffer.alloc(Tlc59116.LEDS, 0);
     this.i2c.writeI2cBlockSync(this.devAddress, register, pwm.length, pwm);
+  }
+
+  reset() {
+    this.i2c.writeByteSync(Tlc59116.SOFT_RESET_ADDR, 0xA5, 0x5A);
   }
 
   //////////////////////
